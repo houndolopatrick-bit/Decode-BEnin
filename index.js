@@ -11,7 +11,7 @@ const PORT = 3000;
 app.use(express.json());
 
 // Liste des étudiants
-let etudiant = [];
+let student = [];
 
 // Logics
 
@@ -22,40 +22,44 @@ app.get("/", (req, res) => {
 
 
 // Création d'un étudiant
-app.post("/createEtudiant", (req, res) =>{
+app.post("/createStudent", (req, res) =>{
     const {nom, prenom, adresse_email, adresse_domicile} = req.body;
+
+    if (!nom || !prenom || !adresse_email || !adresse_domicile) {
+
+        return res.status(400).json({message : "Tous les champs sont obligatoires"});
+        
+    }; 
     
-    const newEtudiant = {
+     const newStudent = {
         id : Date.now(),
         nom,
         prenom,
         adresse_email,
         adresse_domicile
     };
-
-    if (name && prenom && adresse_email && adresse_domicile) {
-        etudiant.push(newEtudiant);
     
-        res.status(201).json(newEtudiant);
-}   
+    student.push(newStudent);
+    return res.status(201).json(newStudent);
 });
+
 
 // Get all students
 
 app.get('/allStudent', (req, res) => {
 
-    return res.status(200).json(etudiant)
+    return res.status(200).json(student)
 
 });
 
 
 //Get a student by id 
-app.get('/student/:id', (req, res)=> {
+app.get('/get-student/:id', (req, res)=> {
     try{
         const id = req.params.id; // Obliger de convertir ce string en number
 
-        index = etudiant.findIndex( t => t.id === parseInt(id))
-        const student = etudiant[index];
+        index = student.findIndex( t => t.id === parseInt(id))
+        const student = student[index];
         res.status(200).json(student);
     
     } catch(err) {
@@ -68,17 +72,17 @@ app.get('/student/:id', (req, res)=> {
 
 // Delete a student
 // les : d'un param avant le param, une erreur dans l'endpoint et ton serveur crashe.
-app.delete('/student/:id', (req, res) =>{ 
+app.delete('/del-student/:id', (req, res) =>{ 
     const id = req.params.id;
 
-    const index = etudiant.findIndex(t => t.id === parseInt(id));
+    const index = student.findIndex(t => t.id === parseInt(id));
 
     if(index === -1){
         res.status(404).json({message : 'Student is not found'});
     } 
     
     else {
-        etudiant.splice(index, 1); // splice modifie le tableau originale
+        student.splice(index, 1); // splice modifie le tableau originale
         res.status(202).json({message : 'Student delete successfully'});
 
     };
@@ -86,20 +90,20 @@ app.delete('/student/:id', (req, res) =>{
 } );
 
 // UPDATE student information
-app.put('/student/:id', (req, res) => {
+app.put('/up- student/:id', (req, res) => {
     const id = req.params.id
 
-    const index = etudiant.findIndex(t => t.index === parseInt(id));
+    const index = student.findIndex(t => t.index === parseInt(id));
     if (index === -1){
         res.status(404).json({message : 'Student is not found'});
 
     } 
     else {
         const {nom, prenom, adresse_email, adresse_domicile} = req.body;
-        const id = etudiant[index].id
+        const id = student[index].id
 
-        // Fallait utiliser les crochets et non etudiant.index
-        etudiant[index] = { 
+        // Fallait utiliser les crochets et non student.index
+        student[index] = { 
             id,
             nom,
             prenom,
